@@ -38,13 +38,13 @@
 <script setup lang="ts">
 const links = [
   {
-    href: '/med',
+    href: '/meddb-web/list',
     icon: 'mdi-text-box-outline',
     subtitle: '資料來源：政府資料開放平臺',
     title: '藥品列表',
   },
   {
-    href: '/test',
+    href: '/meddb-web/test',
     icon: 'mdi-star-circle-outline',
     subtitle: '藥品知識小測驗',
     title: '小試身手',
