@@ -2,7 +2,7 @@ import type { LabelingData } from '../types'
 import { STORE_CONFIG, setAllData, getAllData, queryByIndex, queryById } from '../db/dataDB'
 
 // 服務配置
-const JSON_URL = '/data/labeling.json'
+const JSON_URL = '/meddb-web/data/labeling.json'
 const STORE_NAME = STORE_CONFIG.LABELING.name
 const CACHE_EXPIRATION_MS = 60 * 60 * 1000 // 範例：快取 1 小時
 

@@ -2,7 +2,7 @@ import type { MainData } from '../types'
 import { STORE_CONFIG, setAllData, getAllData, queryByIndex, queryById } from '../db/dataDB'
 
 // 服務配置
-const JSON_URL = '/data/maindata.json'
+const JSON_URL = '/meddb-web/data/maindata.json'
 const STORE_NAME = STORE_CONFIG.MAINDATA.name
 const CACHE_EXPIRATION_MS = 60 * 60 * 1000 // 範例：快取 1 小時
 
