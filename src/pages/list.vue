@@ -1,17 +1,13 @@
 <script lang="ts" setup>
-// import appearanceJson from '../../public/data/appearance.json'
-// import mainDataJson from '../../public/data/maindata.json'
-// import labelingJson from '../../public/data/labeling.json'
 import { ApiUtil } from '../api/apiUtil'
 import type { AppearanceData, ContentData, LabelingData, MainData } from '../types'
-// const appearanceData = ref<any[]>(appearanceJson)
-// const labelingData = ref<any[]>(labelingJson as any[])
-// const mainData = ref<any[]>(mainDataJson as any[])
+// import { useDisplay } from 'vuetify'
 interface DetailData extends AppearanceData {
   boxImgUrl?: string
   labelingUrl?: string
 }
 
+// const display = useDisplay()
 const appearanceData = ref<AppearanceData[]>([])
 const labelingData = ref<LabelingData[]>([])
 const mainData = ref<MainData[]>([])
@@ -41,6 +37,16 @@ const headers = [
   { title: '備註', align: 'start', sortable: false, key: 'group' },
   { title: '藥品頁面', align: 'center', sortable: false, key: 'medicineUrl' },
   { width: 1, key: 'data-table-expand', align: 'end' },
+]
+
+const detailHeaders = [
+  { title: '形狀', align: 'start', sortable: false, key: 'shape' },
+  { title: '顏色', align: 'start', sortable: false, key: 'color' },
+  { title: '刻痕', align: 'start', sortable: false, key: 'imprint' },
+  { title: '尺寸', align: 'start', sortable: false, key: 'size' },
+  { title: '特殊氣味', align: 'start', sortable: false, key: 'smell' },
+  { title: '外觀', align: 'center', sortable: false, key: 'imgUrl' },
+  { title: '盒子外觀', align: 'start', sortable: false, key: 'boxImgUrl' },
 ]
 
 const openUrl = (url: string): Window | null => window.open(url, '_blank')
@@ -174,6 +180,7 @@ onMounted(async () => {
       :items-per-page-options="[25, 50, 100]"
       show-expand
       :loading="isTableLoading"
+      :mobile-breakpoint="800"
     >
       <template v-slot:loading>
         <v-skeleton-loader type="table-row@10"></v-skeleton-loader>
@@ -221,72 +228,60 @@ onMounted(async () => {
               <div type="info" variant="outlined" class="text-center my-4">查無外觀資料。</div>
             </v-sheet>
             <v-sheet rounded="lg" border v-else>
-              <v-table density="compact" class="bg-blue-lighten-4">
-                <thead>
-                  <tr>
-                    <th class="text-center">形狀</th>
-                    <th class="text-center">顏色</th>
-                    <th class="text-center">刻痕</th>
-                    <th class="text-center">尺寸</th>
-                    <th class="text-center">特殊氣味</th>
-                    <th class="text-center">外觀</th>
-                    <th class="text-center">盒子外觀</th>
-                  </tr>
-                </thead>
-                <tbody class="bg-blue-lighten-5">
-                  <tr v-for="value in getInfoByMedicineId(item.medicineId)">
-                    <td class="text-center">{{ value.shape }}</td>
-                    <td class="text-center">{{ value.color }}</td>
-                    <td class="text-center">{{ value.imprint }}</td>
-                    <td class="text-center">{{ value.size }}</td>
-                    <td class="text-center">{{ value.smell ? value.smell : '無' }}</td>
-                    <td class="pa-2">
-                      <v-img
-                        :width="200"
-                        aspect-ratio="1/1"
-                        cover
-                        :src="value.imgUrl"
-                        @click="openDialog"
-                        class="mx-auto cursor-pointer"
-                        style="cursor: pointer"
-                      ></v-img>
+              <v-data-table
+                :headers="detailHeaders"
+                :items="getInfoByMedicineId(item.medicineId)"
+                density="compact"
+                item-key="permitNo"
+                item-value="permitNo"
+                :mobile-breakpoint="800"
+                hide-default-footer
+                class="bg-blue-lighten-4"
+              >
+                <template v-slot:item.smell="{ value }">
+                  {{ value ? value : '無' }}
+                </template>
+                <template v-slot:item.imgUrl="{ value }">
+                  <v-img
+                    :width="200"
+                    aspect-ratio="1/1"
+                    cover
+                    :src="value"
+                    @click="openDialog"
+                    class="mx-auto cursor-pointer"
+                    style="cursor: pointer"
+                  ></v-img>
 
-                      <v-dialog
-                        v-model="isDialogOpen"
-                        max-width="80vw"
-                        @click:outside="isDialogOpen = false"
-                      >
-                        <v-card>
-                          <v-img
-                            :src="value.imgUrl"
-                            contain
-                            class="bg-grey-lighten-2"
-                            alt="全尺寸圖片"
-                          ></v-img>
-                          <v-card-actions>
-                            <v-spacer></v-spacer>
-                            <v-btn color="primary" @click="isDialogOpen = false">關閉</v-btn>
-                          </v-card-actions>
-                        </v-card>
-                      </v-dialog>
-                    </td>
-                    <td class="text-center">
-                      <v-btn
-                        v-if="value.boxImgUrl"
-                        variant="plain"
-                        color="primary"
-                        @click="openUrl(value.boxImgUrl)"
-                        >點我查看</v-btn
-                      >
-                      <div v-else>
-                        <div type="error" variant="outlined" class="text-center my-4">
-                          查無盒子外觀資料。
-                        </div>
-                      </div>
-                    </td>
-                  </tr>
-                </tbody>
-              </v-table>
+                  <v-dialog
+                    v-model="isDialogOpen"
+                    max-width="80vw"
+                    @click:outside="isDialogOpen = false"
+                  >
+                    <v-card>
+                      <v-img
+                        :src="value"
+                        contain
+                        class="bg-grey-lighten-2"
+                        alt="全尺寸圖片"
+                      ></v-img>
+                      <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn color="primary" @click="isDialogOpen = false">關閉</v-btn>
+                      </v-card-actions>
+                    </v-card>
+                  </v-dialog>
+                </template>
+                <template v-slot:item.boxImgUrl="{ value }">
+                  <v-btn v-if="value" variant="plain" color="primary" @click="openUrl(value)"
+                    >點我查看</v-btn
+                  >
+                  <div v-else>
+                    <div type="error" variant="outlined" class="text-center my-4">
+                      查無盒子外觀資料。
+                    </div>
+                  </div>
+                </template>
+              </v-data-table>
             </v-sheet>
           </td>
         </tr>
@@ -295,3 +290,8 @@ onMounted(async () => {
   </v-container>
   <!-- </div> -->
 </template>
+<style scoped>
+:deep(.v-data-table-headers--mobile) {
+  display: none;
+}
+</style>
