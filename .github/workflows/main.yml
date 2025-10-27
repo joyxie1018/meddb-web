@@ -3,6 +3,12 @@ on:
   push:
     branches:
       - main
+# 設定權限，允許向 Pages 寫入
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
@@ -28,7 +34,7 @@ jobs:
       - name: Deploy to Github Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
-          github_token: ${{ secrets.CICD_SECRET }}
-          publish_dir: ./docs/.vitepress/dist
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
           publish_branch: gh-pages
           force_orphan: true
