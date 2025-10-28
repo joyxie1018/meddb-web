@@ -16,18 +16,18 @@
       </div>
 
       <v-row>
-        <v-col v-for="link in links" :key="link.href" cols="12" md="6">
+        <v-col v-for="link in links" :key="link.path" cols="12" md="6">
           <v-card
             append-icon="mdi-open-in-new"
             class="py-4"
             color="surface-variant"
-            :href="link.href"
             :prepend-icon="link.icon"
             rel="noopener noreferrer"
             rounded="lg"
             :subtitle="link.subtitle"
             :title="link.title"
             variant="tonal"
+            @click="linkPage(link.path)"
           />
         </v-col>
       </v-row>
@@ -36,15 +36,19 @@
 </template>
 
 <script setup lang="ts">
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+
 const links = [
   {
-    href: '/meddb-web/list',
+    path: 'list',
     icon: 'mdi-text-box-outline',
     subtitle: '資料來源：政府資料開放平臺',
     title: '藥品列表',
   },
   {
-    href: '/meddb-web/test',
+    path: 'test',
     icon: 'mdi-star-circle-outline',
     subtitle: '藥品知識小測驗',
     title: '小試身手',
@@ -62,4 +66,6 @@ const links = [
   //   title: 'Community',
   // },
 ]
+
+const linkPage = (path: string) => router.replace(path)
 </script>

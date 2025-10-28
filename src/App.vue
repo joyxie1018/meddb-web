@@ -9,7 +9,6 @@ const theme = ref('light')
 const router = useRouter()
 const isPageLoading = ref(false)
 const routePages = [
-  { title: '首頁', path: '/' },
   { title: '藥品列表', path: '/list' },
   { title: '小試身手', path: '/test' },
 ]
@@ -32,13 +31,17 @@ router.afterEach(() => {
     isPageLoading.value = false
   }, 1000)
 })
+
+const backToHomePage = () => router.replace('/')
 </script>
 
 <template>
   <v-responsive class="border rounded">
     <v-app :theme="theme">
       <v-app-bar class="px-3">
-        <v-app-bar-title class="medtitle">藥品資料庫</v-app-bar-title>
+        <v-app-bar-title class="medtitle cursor-pointer" @click="backToHomePage"
+          >藥品資料庫</v-app-bar-title
+        >
         <v-btn v-for="value in routePages" :text="value.title" :to="value.path" exact slim />
         <v-spacer></v-spacer>
         <v-btn
